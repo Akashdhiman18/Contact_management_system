@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Home</title>
+    <meta charset="UTF-8" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}" />
 </head>
-<body>
-    <form method="post" action="/loginuser">
+<body style="background-image: url(static/img/background.jpg);">
+    <nav>
+        <input type="checkbox" id="nav-toggle">
+        <div class="logo">Connect<strong>Ease</strong></div>
+        <ul class="links">
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Signup</a></li>
+        </ul>
+        <label for="nav-toggle" class="icon-burger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </label>
+    </nav>
+    
+    <div class="container">
+        <div class="center">
+            <h1>Login </h1>
+            <form action="{{ url_for('login') }}" method="POST">
+               
+                <div class="txt_field">
+                    <input type="text" name="email" required placeholder="Email Address">
+                    <span></span>
+                </div>
+                <div class="txt_field">
+                    <input type="password" name="password" required placeholder="Password">
+                    <span></span>
+                </div>
+             
+                <input name="submit" type="submit" value="login">
+                <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
+            </form>
+        </div>
+    </div>
 
-        <p>Access code:</p><input type="text" name="accesscode">
-        <br>
-        <input type="submit" value="login">
-
-    </form>
+    <!-- Font Awesome CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>
 </html>

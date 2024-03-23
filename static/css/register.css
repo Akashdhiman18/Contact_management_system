@@ -1,0 +1,279 @@
+ body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        nav {
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            right: 0;
+            top: 0;
+            font-family: "Montserrat", "sans-serif";
+            height: 60px;
+            background-color: #1997BF; /* Updated nav header background color */
+            padding: 0 5%;
+        }
+
+        nav .logo {
+            float: left;
+            width: 40%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        nav .links {
+  float: right; /* Align to the right */
+  padding: 0;
+  margin: 0;
+  width: 60%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end; /* Align items to the end (right side) */
+  align-items: center;
+}
+
+
+        nav .links li {
+            list-style: none;
+        }
+
+        nav .links a {
+            display: block;
+            padding: 1em;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            position: relative;
+        }
+
+        nav .links a:hover {
+            color: white;
+        }
+
+        nav .links a::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            visibility: hidden;
+            transform: scaleX(0);
+            transition: all 0.3s ease-in-out 0s;
+        }
+
+        nav .links a:hover::before {
+            visibility: visible;
+            transform: scaleX(1);
+            color: white;
+        }
+
+        #nav-toggle {
+            position: absolute;
+            top: -100px;
+        }
+
+        nav .icon-burger {
+            display: none;
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        nav .icon-burger .line {
+            width: 30px;
+            height: 5px;
+            background-color: #fff;
+            margin: 5px;
+            border-radius: 3px;
+            transition: all 0.5s ease-in-out;
+        }
+
+        @media screen and (max-width: 768px) {
+            nav .logo {
+                float: none;
+                width: auto;
+                justify-content: center;
+            }
+            nav .links {
+                float: none;
+                position: fixed;
+                z-index: 9;
+                left: 0;
+                right: 0;
+                top: 100px;
+                bottom: 100%;
+                width: auto;
+                height: auto;
+                flex-direction: column;
+                justify-content: space-evenly;
+                background-color: rgba(0, 0, 0, 0.8);
+                overflow: hidden;
+                transition: all 0.5s ease-in-out;
+            }
+            nav .links a {
+                font-size: 20px;
+            }
+            nav :checked ~ .links {
+                bottom: 0;
+            }
+            nav .icon-burger {
+                display: block;
+            }
+            nav :checked ~ .icon-burger .line:nth-child(1) {
+                transform: translateY(10px) rotate(225deg);
+            }
+            nav :checked ~ .icon-burger .line:nth-child(3) {
+                transform: translateY(-10px) rotate(-225deg);
+            }
+            nav :checked ~ .icon-burger .line:nth-child(2) {
+                opacity: 0;
+            }
+        }
+
+.center{
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 29vw;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.center h1{
+  text-align: center;   
+  padding: 0 0 20px 0;
+  border-bottom: 1px solid silver;
+}
+
+.center form{
+  padding: 0 40px;    font-family: "Montserrat", "sans-serif";
+  box-sizing: border-box;
+}
+
+form .txt_field{
+  position: relative;    font-family: "Montserrat", "sans-serif";
+  border-bottom: 2px solid #adadad;
+  margin: 30px 0;
+}
+
+.txt_field input{
+  width: 100%;
+  padding: 0 5px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.txt_field label{
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  color: #adadad;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.txt_field span::before{
+  content: '';
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 0px;
+  height: 2px;
+  background: #2691d9;
+  transition: .5s;
+}
+
+.txt_field input:focus ~ label,
+.txt_field input:valid ~ label{
+  top: -5px;
+  color: #2691d9;
+}
+
+.txt_field input:focus ~ span::before,
+.txt_field input:Valid ~ span::before{
+  width: 100%;
+}
+
+.pass{
+  margin: -5px 0 20px 5px;
+  color: #a6a6a6;
+  cursor: pointer;
+}
+
+.pass:hover{
+  text-decoration: underline;
+}
+
+input[type="Submit"]{
+  width: 100%;
+  height: 50px;
+  border: 1px solid;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+
+
+}
+
+input[type="Submit"]:hover{
+  background: #2691d9;
+  color: #e9f4fb;
+  transition: .5s;
+}
+
+.signup_link{
+  margin: 30px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #666666;
+}
+
+.signup_link a{
+  color: #2691d9;
+  text-decoration: none;
+}
+
+.signup_link a:hover{
+  text-decoration: underline;
+}
+
+.HomeAbout{
+  width: 100vw;
+  height: 25vh;
+}
+ .back-btn {
+    border-style: none;
+    background: none;
+    color: black;
+    padding: 20px 40px; /* Adjust padding as needed */
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    
+    display: block; /* Change to block to center vertically */
+  
+}
+
+.back-btn:hover {
+    color: #1997BF;
+}

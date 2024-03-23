@@ -1,96 +1,109 @@
+
 import os
 import psycopg2
-from flask import Flask, render_template, url_for, request
+from flask import Flask, redirect, render_template, session, url_for, request
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Login, Users
+from models import db, Users, registeruser
+from flask_migrate import Migrate
+from werkzeug.security import check_password_hash
 
 # Init App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisissecret'
-# our database uri
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
 
+# Database configuration
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Initialize the database
 db.init_app(app)
-
+migrate = Migrate(app, db)
+app.config['STATIC_FOLDER'] = 'static'
+# Routes
 @app.route('/', methods=['GET'])
 def index():
-   
-    #userdata = Users.query.all()
-    usersdata = db.session.execute(db.select(Users).order_by(Users.id)).scalars()
-    return render_template('users.html', usersdata=usersdata)
+    usersdata = Users.query.order_by(Users.id).all()
+    return render_template('home.html', usersdata=usersdata)
 
 @app.route('/users', methods=['GET'])
 def users():
-   
-    #userdata = Users.query.all()
-    usersdata = db.session.execute(db.select(Users).order_by(Users.id)).scalars()
+    usersdata = Users.query.order_by(Users.id).all()
     return render_template('users.html', usersdata=usersdata)
 
-@app.route('/registeruser', methods=['GET', 'POST'])
-def registeruser():
-
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == "POST":
+        name = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        mobileno = request.form['mobileno']
 
-        # get user data
-        firstnameData = request.form['firstname']
-        lastnameData = request.form['lastname']
-        emailaddressData = request.form['emailaddress']
-        mobileData = request.form['mobilephone']
-        homeaddressData = request.form['homeaddress']
-        pictureData = request.form['picture']
+        # Check if password and confirm_password match
+        if password != confirm_password:
+            return "Passwords do not match. Please try again."
 
-        # populate database
-        newUser = Users(first_name=firstnameData, last_name=lastnameData, email_address=emailaddressData, 
-                           mobile=mobileData, home_address=homeaddressData, url_of_picture=pictureData)
-        db.session.add(newUser)
+        # Check if the email is already registered
+        existing_user = registeruser.query.filter_by(emailaddress=email).first()
+        if existing_user:
+            return "Email address is already registered."
+
+        # Create a new user
+        new_user = registeruser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
+        db.session.add(new_user)
         db.session.commit()
 
-        usersdata = db.session.execute(db.select(Users).order_by(Users.id)).scalars()
-        return render_template('users.html', usersdata=usersdata)
-        #return "<h4>User created</h4>"
+        return "Registration successful!"
+
+    # Return the 'register.html' template for GET requests
     return render_template('register.html')
 
-@app.route('/loginuser', methods=['GET', 'POST'])
-def loginuser():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == "POST":
-        #get login data
-        accesscodeData = request.form['accesscode']
-        # database lookup
-        
-        user = Login.query.filter_by(access_code=accesscodeData).first()
-        if user:
-            usersdata = db.session.execute(db.select(Users).order_by(Users.id)).scalars()
-            return render_template('users.html', usersdata=usersdata)
-        elif not user:
-            return "<h4>Login failed</h4>"
+        email = request.form['email']
+        password = request.form['password']
 
+        # Check if the email exists in the database
+        user = registeruser.query.filter_by(emailaddress=email).first()
+        if user and user.passcode == password:
+            return "Login successful!"
+        else:
+            return "Invalid email or password. Please try again."
+
+    # Return the 'login.html' template for GET requests
     return render_template('login.html')
 
-@app.route('/registeralogin', methods=['GET', 'POST'])
-def registeralogin():
-    if request.method == "POST":
-        accesscodeData = request.form['accesscode']
-        emaiiladdressData = request.form['emailaddress']
+# @app.route('/addContact', methods=['GET', 'POST'])
+# def addContact():
+#     if request.method == "POST":
+#         firstnameData = request.form['firstname']
+#         lastnameData = request.form['lastname']
+#         emailaddressData = request.form['emailaddress']
+#         mobileData = request.form['mobilephone']
+#         homeaddressData = request.form['homeaddress']
+#         pictureData = request.form['picture']
 
-        newLogin = Login(access_code=accesscodeData, email_address=emaiiladdressData)
-        db.session.add(newLogin)
-        db.session.commit()
+#         newUser = Users(first_name=firstnameData, last_name=lastnameData, email_address=emailaddressData, 
+#                         mobile=mobileData, home_address=homeaddressData, url_of_picture=pictureData)
+#         db.session.add(newUser)
+#         db.session.commit()
+#         return render_template('users.html')
 
-        return "<h4>Login created successfully</h4>"
+#     # Return the 'register.html' template for GET requests
+#     return render_template('addContacts.html')
 
-    return render_template('register_login.html')
+   
 
 @app.route('/edit', methods=['POST', 'GET'])
 def edit():
-    # trying to mimic the MS page load and page post back events.
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = db.session.execute(db.select(Users).filter_by(id=userid)).scalar_one()
+        userdata = Users.query.filter_by(id=userid).first()
         return render_template('edit.html', userdata=userdata)
-        #return '<h1>' + userdata.first_name + '</h1>'
     elif request.method == "POST":
         userid = request.args.get('ID')
-        userdatatochange = db.session.execute(db.select(Users).filter_by(id=userid)).scalar_one()
+        userdatatochange = Users.query.filter_by(id=userid).first()
        
         updatedhomeaddressofuser = request.form['homeaddress']
         updatedfirstnameofuser = request.form['firstname']
@@ -100,43 +113,32 @@ def edit():
         userdatatochange.first_name = updatedfirstnameofuser
         userdatatochange.email_address = updatedemailaddressofuser
         db.session.commit()
-        # update the database.
-        return '<h1>' + userdatatochange.email_address + '</h1>'
-        #return index()
+
+        return "<h1>" + userdatatochange.email_address + "</h1>"
 
 @app.route('/deletecheck', methods=['POST', 'GET'])
 def deletecheck():
-    
     if request.method == "GET":
-        #get the user data from the DB.
         userid = request.args.get('ID')
-        userdata = db.session.execute(db.select(Users).filter_by(id=userid)).scalar_one()
-        #send to the page
+        userdata = Users.query.filter_by(id=userid).first()
         return render_template('delete_check.html', userdata=userdata)
-    return "<h4>User delete page</h4>"    
+    return "<h4>User delete page</h4>"
 
 @app.route('/deleteproceed', methods=['GET', 'POST'])
 def deleteproceed():
-
     if request.method == "GET":
-        #get the user data from the DB.
         userid = request.args.get('ID')
-        userdata = db.session.execute(db.select(Users).filter_by(id=userid)).scalar_one()
-        
-        print(userdata.id)
-        print(userdata.first_name)
-        # delete the record
+        userdata = Users.query.filter_by(id=userid).first()
+
         db.session.delete(userdata)
         db.session.commit()
 
-        # rerun the users page
-        usersdata = db.session.execute(db.select(Users).order_by(Users.id)).scalars()
+        usersdata = Users.query.order_by(Users.id).all()
         return render_template('users.html', usersdata=usersdata)
         
-    return "<h4>User delete page</h4>" 
+    return "<h4>User delete page</h4>"
 
-# Run the Flask app if this script is the main entry point
+
+
 if __name__ == '__main__':
-    #with app.app_context():
-        #db.create_all() # <--- create db object.
     app.run(debug=True)
