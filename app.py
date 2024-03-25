@@ -1,7 +1,7 @@
 
 import os
 import psycopg2
-from flask import Flask, redirect, render_template, session, url_for, request
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Contacts, SystemUser
 from flask_migrate import Migrate
@@ -58,6 +58,38 @@ def register():
     # Return the 'register.html' template for GET requests
     return render_template('register.html')
 
+@app.route('/register-by-ajax', methods=['GET', 'POST'])
+def register_user_by_ajax():
+    if request.method == "POST":
+        name = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        mobileno = request.form['mobileno']
+        output_msg = ""
+
+        # Check if password and confirm_password match
+        if password != confirm_password:
+            output_msg = "Passwords do not match. Please try again."
+            return jsonify({'output_msg': output_msg})
+
+        # Check if the email is already registered
+        existing_user = SystemUser.query.filter_by(emailaddress=email).first()
+        if existing_user:
+            output_msg = "Email address is already registered."
+            return jsonify({'output_msg': output_msg})
+
+        # Create a new user
+        new_user = SystemUser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
+        db.session.add(new_user)
+        db.session.commit()
+
+        output_msg = "Registration successful!"
+        return jsonify({'output_msg': output_msg})
+
+    # Return the 'register.html' template for GET requests
+    return render_template('register.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
@@ -73,6 +105,27 @@ def login():
             return "Invalid email or password. Please try again."
 
     # Return the 'login.html' template for GET requests
+    return render_template('login.html')
+
+@app.route('/login-by-ajax', methods=['POST'])
+def login_by_ajax():
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+        output_msg = ""
+
+        # Check if the email exists in the database
+        user = SystemUser.query.filter_by(emailaddress=email).first()
+        if user and user.passcode == password:
+            print('does it get here - 1')
+            # return "Login successful!"
+            return render_template('users.html')
+        else:
+            output_msg = "Invalid email or password. Please try again."
+            return jsonify({'output_msg': output_msg})
+
+    # Return the 'login.html' template for GET requests
+    print('does it get here - 2')
     return render_template('login.html')
 
 # @app.route('/addContact', methods=['GET', 'POST'])

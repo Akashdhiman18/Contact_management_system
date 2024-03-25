@@ -3,7 +3,7 @@
 <head>
     <title>Home</title>
     <meta charset="UTF-8" />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}" />
@@ -26,22 +26,42 @@
     <div class="container">
         <div class="center">
             <h1>Login </h1>
-            <form action="{{ url_for('login') }}" method="POST">
+            <form id="login-form">
                
                 <div class="txt_field">
-                    <input type="text" name="email" required placeholder="Email Address">
+                    <input type="text" id="id_email" name="email" required placeholder="Email Address">
                     <span></span>
                 </div>
                 <div class="txt_field">
-                    <input type="password" name="password" required placeholder="Password">
+                    <input type="password" id="id_password" name="password" required placeholder="Password">
                     <span></span>
                 </div>
              
                 <input name="submit" type="submit" value="login">
                 <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
             </form>
+            <div id="output-msg"></div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#login-form').on('submit',function(e){
+                $.ajax({
+                        data : {
+                                email : $('#id_email').val(),
+                                password: $('#id_password').val(),
+                        },
+                        type : 'POST',
+                        url : '/login-by-ajax'
+                })
+                .done(function(data){
+                $('#output-msg').text(data.output_msg).show();
+                });
+                e.preventDefault();
+            });
+        });
+    </script>
 
     <!-- Font Awesome CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
