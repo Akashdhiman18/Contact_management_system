@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 # Create A Model For Table
 class Contacts(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(1000))
     last_name = db.Column(db.String(1000))
@@ -15,7 +15,7 @@ class Contacts(db.Model):
 
 
 class SystemUser(db.Model):
-    __tablename__='registeruser'
+    __tablename__='systemuser'
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(1000))
     emailaddress=db.Column(db.String(500))
