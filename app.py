@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisissecret'
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the database
@@ -22,12 +22,12 @@ app.config['STATIC_FOLDER'] = 'static'
 # Routes
 @app.route('/', methods=['GET'])
 def index():
-    usersdata = Contacts.query.order_by(Contacts.id).all()
+    usersdata = Contacts.query.order_by(Contacts.contact_id).all()
     return render_template('home.html', usersdata=usersdata)
 
 @app.route('/users', methods=['GET'])
 def users():
-    usersdata = Contacts.query.order_by(Contacts.id).all()
+    usersdata = Contacts.query.order_by(Contacts.contact_id).all()
     return render_template('users.html', usersdata=usersdata)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -44,12 +44,12 @@ def register():
             return "Passwords do not match. Please try again."
 
         # Check if the email is already registered
-        existing_user = SystemUser.query.filter_by(emailaddress=email).first()
+        existing_user = SystemUser.query.filter_by(email_address=email).first()
         if existing_user:
             return "Email address is already registered."
 
         # Create a new user
-        new_user = SystemUser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
+        new_user = SystemUser(name=name, email_address=email, passcode=password, mobile_no=mobileno)
         db.session.add(new_user)
         db.session.commit()
 
@@ -74,13 +74,13 @@ def register_user_by_ajax():
             return jsonify({'output_msg': output_msg})
 
         # Check if the email is already registered
-        existing_user = SystemUser.query.filter_by(emailaddress=email).first()
+        existing_user = SystemUser.query.filter_by(email_address=email).first()
         if existing_user:
             output_msg = "Email address is already registered."
             return jsonify({'output_msg': output_msg})
 
         # Create a new user
-        new_user = SystemUser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
+        new_user = SystemUser(name=name, email_address=email, passcode=password, mobile_no=mobileno)
         db.session.add(new_user)
         db.session.commit()
 
@@ -90,24 +90,8 @@ def register_user_by_ajax():
     # Return the 'register.html' template for GET requests
     return render_template('register.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == "POST":
-        email = request.form['email']
-        password = request.form['password']
 
-        # Check if the email exists in the database
-        user = SystemUser.query.filter_by(emailaddress=email).first()
-        if user and user.passcode == password:
-            # return "Login successful!"
-            return render_template('users.html')
-        else:
-            return "Invalid email or password. Please try again."
-
-    # Return the 'login.html' template for GET requests
-    return render_template('login.html')
-
-@app.route('/login-by-ajax', methods=['POST'])
+@app.route('/login-by-ajax', methods=['GET', 'POST'])
 def login_by_ajax():
     if request.method == "POST":
         email = request.form['email']
@@ -115,7 +99,7 @@ def login_by_ajax():
         output_msg = ""
 
         # Check if the email exists in the database
-        user = SystemUser.query.filter_by(emailaddress=email).first()
+        user = SystemUser.query.filter_by(email_address=email).first()
         if user and user.passcode == password:
             print('does it get here - 1')
             # return "Login successful!"

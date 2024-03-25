@@ -13,8 +13,8 @@
         <input type="checkbox" id="nav-toggle">
         <div class="logo">Connect<strong>Ease</strong></div>
         <ul class="links">
-            <li><a href="{{ url_for('login') }}">Login</a></li>
-            <li><a href="{{ url_for('register') }}">Signup</a></li>
+            <li><a href="{{ url_for('login_by_ajax') }}">Login</a></li>
+            <li><a href="{{ url_for('register_user_by_ajax') }}">Signup</a></li>
         </ul>
         <label for="nav-toggle" class="icon-burger">
             <div class="line"></div>
@@ -26,7 +26,7 @@
     <div class="container">
         <div class="center">
             <h1>Login </h1>
-            <form id="login-form">
+            <form id="login-form" method="POST"> 
                
                 <div class="txt_field">
                     <input type="text" id="id_email" name="email" required placeholder="Email Address">
