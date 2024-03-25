@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 # Create A Model For Table
-class Users(db.Model):
+class Contacts(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(1000))
@@ -14,7 +14,7 @@ class Users(db.Model):
     url_of_picture = db.Column(db.String(1000))
 
 
-class registeruser(db.Model):
+class SystemUser(db.Model):
     __tablename__='registeruser'
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(1000))

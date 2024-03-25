@@ -3,7 +3,7 @@ import os
 import psycopg2
 from flask import Flask, redirect, render_template, session, url_for, request
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, registeruser
+from models import db, Contacts, SystemUser
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash
 
@@ -22,12 +22,12 @@ app.config['STATIC_FOLDER'] = 'static'
 # Routes
 @app.route('/', methods=['GET'])
 def index():
-    usersdata = Users.query.order_by(Users.id).all()
+    usersdata = Contacts.query.order_by(Contacts.id).all()
     return render_template('home.html', usersdata=usersdata)
 
 @app.route('/users', methods=['GET'])
 def users():
-    usersdata = Users.query.order_by(Users.id).all()
+    usersdata = Contacts.query.order_by(Contacts.id).all()
     return render_template('users.html', usersdata=usersdata)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -44,12 +44,12 @@ def register():
             return "Passwords do not match. Please try again."
 
         # Check if the email is already registered
-        existing_user = registeruser.query.filter_by(emailaddress=email).first()
+        existing_user = SystemUser.query.filter_by(emailaddress=email).first()
         if existing_user:
             return "Email address is already registered."
 
         # Create a new user
-        new_user = registeruser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
+        new_user = SystemUser(name=name, emailaddress=email, passcode=password, mobileno=mobileno)
         db.session.add(new_user)
         db.session.commit()
 
@@ -65,9 +65,10 @@ def login():
         password = request.form['password']
 
         # Check if the email exists in the database
-        user = registeruser.query.filter_by(emailaddress=email).first()
+        user = SystemUser.query.filter_by(emailaddress=email).first()
         if user and user.passcode == password:
-            return "Login successful!"
+            # return "Login successful!"
+            return render_template('users.html')
         else:
             return "Invalid email or password. Please try again."
 
@@ -99,11 +100,11 @@ def login():
 def edit():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Users.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
         return render_template('edit.html', userdata=userdata)
     elif request.method == "POST":
         userid = request.args.get('ID')
-        userdatatochange = Users.query.filter_by(id=userid).first()
+        userdatatochange = Contacts.query.filter_by(id=userid).first()
        
         updatedhomeaddressofuser = request.form['homeaddress']
         updatedfirstnameofuser = request.form['firstname']
@@ -120,7 +121,7 @@ def edit():
 def deletecheck():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Users.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
         return render_template('delete_check.html', userdata=userdata)
     return "<h4>User delete page</h4>"
 
@@ -128,12 +129,12 @@ def deletecheck():
 def deleteproceed():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Users.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
 
         db.session.delete(userdata)
         db.session.commit()
 
-        usersdata = Users.query.order_by(Users.id).all()
+        usersdata = Contacts.query.order_by(Contacts.id).all()
         return render_template('users.html', usersdata=usersdata)
         
     return "<h4>User delete page</h4>"
