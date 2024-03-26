@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisissecret'
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the database
@@ -103,10 +103,12 @@ def login_by_ajax():
         if user and user.passcode == password:
             print('does it get here - 1')
             # return "Login successful!"
-            return render_template('users.html')
+            #return render_template('users.html')
+            output_msg = "Success."
+            return jsonify({'output_msg': output_msg, 'success': True})
         else:
             output_msg = "Invalid email or password. Please try again."
-            return jsonify({'output_msg': output_msg})
+            return jsonify({'output_msg': output_msg, 'success': False})
 
     # Return the 'login.html' template for GET requests
     print('does it get here - 2')

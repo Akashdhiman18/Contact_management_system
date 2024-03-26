@@ -40,7 +40,8 @@
                 <input name="submit" type="submit" value="login">
                 <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
             </form>
-            <div id="output-msg"></div>
+            <div class="success-msg" id="success-output-msg"></div>
+            <div class="failure-msg" id="failure-output-msg"></div>
         </div>
     </div>
 
@@ -56,7 +57,14 @@
                         url : '/login-by-ajax'
                 })
                 .done(function(data){
-                $('#output-msg').text(data.output_msg).show();
+                    if (data.success){
+                        $('#success-output-msg').text(data.output_msg).show();
+                        window.location.href = '/users';
+                    }
+                    else{
+                        $('#failure-output-msg').text(data.output_msg).show();
+                    }
+                
                 });
                 e.preventDefault();
             });
