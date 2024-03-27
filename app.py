@@ -10,9 +10,10 @@ from werkzeug.security import check_password_hash
 # Init App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisissecret'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the database
@@ -27,8 +28,8 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def users():
-    usersdata = Contacts.query.order_by(Contacts.contact_id).all()
-    return render_template('users.html', usersdata=usersdata)
+    contacts = Contacts.query.all()
+    return render_template('users.html', contacts=contacts)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -114,24 +115,37 @@ def login_by_ajax():
     print('does it get here - 2')
     return render_template('login.html')
 
-# @app.route('/addContact', methods=['GET', 'POST'])
-# def addContact():
-#     if request.method == "POST":
-#         firstnameData = request.form['firstname']
-#         lastnameData = request.form['lastname']
-#         emailaddressData = request.form['emailaddress']
-#         mobileData = request.form['mobilephone']
-#         homeaddressData = request.form['homeaddress']
-#         pictureData = request.form['picture']
+    return render_template('users.html')
 
-#         newUser = Users(first_name=firstnameData, last_name=lastnameData, email_address=emailaddressData, 
-#                         mobile=mobileData, home_address=homeaddressData, url_of_picture=pictureData)
-#         db.session.add(newUser)
-#         db.session.commit()
-#         return render_template('users.html')
+    # Return the 'register.html' template for GET requests
+    return render_template('addcontact.html') 
 
-#     # Return the 'register.html' template for GET requests
-#     return render_template('addContacts.html')
+@app.route('/addContact', methods=['POST','GET'])
+def addContact():
+    if request.method == "POST":
+        firstnameData = request.form['firstname']
+        lastnameData = request.form['lastname']
+        emailaddressData = request.form['emailaddress']
+        mobileData = request.form['mobilephone']
+        homeaddressData = request.form['homeaddress']
+        
+       
+        # pictureData = request.form['picture']
+
+        new_contact = Contacts(
+            first_name=firstnameData,
+            last_name=lastnameData,
+            email_address=emailaddressData,
+            mobile=mobileData,
+            home_address=homeaddressData,
+            # url_of_picture=pictureData
+        )
+        db.session.add(new_contact)
+        db.session.commit()
+        return render_template('users.html')
+
+    # Return the 'register.html' template for GET requests
+    return render_template('addcontact.html') 
 
    
 

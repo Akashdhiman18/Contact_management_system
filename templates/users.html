@@ -12,7 +12,7 @@
     <input type="checkbox" id="nav-toggle">
     <div class="logo">Connect<strong>Ease</strong></div>
     <ul class="links">
-      <li><a href="">Add Contact</a></li>
+      <li><a href="{{ url_for('addContact') }}">Add Contact</a></li>
       <li><a href="">My account </a></li>
       <li><a href="">Logout</a></li>
      
@@ -60,15 +60,12 @@
     </td>
     
     <td>
-      <button type="button" class="btn btn-link btn-sm btn-rounded">
-        Edit
-      </button>
-    </td>
-    <td>
-      <button type="button" class="btn btn-link btn-sm btn-rounded">
-        Delete 
-      </button>
-    </td>
+      <button type="button" class="btn btn-info">Edit</button>
+
+     </td>
+     <td>
+       <button type="button" class="btn btn-danger">Delete</button>
+        </td>
   </tr>
 </tbody>
 </table>

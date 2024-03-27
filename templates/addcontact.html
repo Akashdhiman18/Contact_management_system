@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}" />
 </head>
 <body >
     <nav>
@@ -27,38 +27,38 @@
             <div class="row">
                 <div class="column">
                     <h1>Create a New Contact</h1>
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form id="contactForm" action="" method="POST" enctype="multipart/form-data">
                         <div class="form-fields">
                             <div class="txt-field">
-                                <input type="text" name="username" required placeholder="firstname">
+                                <input type="text" name="firstname" required placeholder="firstname">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="text" name="username" required placeholder="Lastname">
+                                <input type="text" name="lastname" required placeholder="Lastname">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="email" name="email" required placeholder="Email Address">
+                                <input type="email" name="emailaddress" required placeholder="Email Address">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="tel" name="phone" required placeholder="Phone Number">
+                                <input type="tel" name="mobilephone" required placeholder="Phone Number">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <textarea name="address" required placeholder="Address"></textarea>
+                                <textarea name="homeaddress" required placeholder="Address"></textarea>
                                 <span></span>
                             </div>
                         </div>
                         <input name="submit" type="submit" value="Create Contact">
-                        <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
+    <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
+</form>
                     </form>
                 </div>
                 <div class="column">
                     <div class="image-upload">
                         <label for="image-upload" class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></label>
-                        <input type="file" name="image" id="image-upload" accept="image/*" required onchange="displayImage(this)">
-                       
+                        <input type="file" name="picture" id="image-upload" accept="image/*" required onchange="displayImage(this)">
                         <img id="preview-image" src="#" alt="Preview Image" style="display: none; max-width: 100%; max-height: 200px;">
                     </div>
                 </div>
@@ -67,25 +67,57 @@
     </div>
 
     <!-- Font Awesome CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-   <script>
-    function displayImage(input) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var uploadIcon = document.querySelector('.upload-icon');
-            uploadIcon.style.backgroundImage = `url('${e.target.result}')`;
-            uploadIcon.style.backgroundSize = 'cover';
-            uploadIcon.style.color = 'transparent';
-        };
-        reader.readAsDataURL(input.files[0]);
+    <script>
+        $(document).ready(function() {
+            $('#contactForm').submit(function(e) {
+                e.preventDefault(); // Prevent the default form submission
+    
+                var formData = new FormData($(this)[0]);
+    
+                $.ajax({
+                    url: '/addContact',
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Handle the successful response, maybe show a success message
+                        console.log('Contact added successfully');
+                        // You can redirect to another page if needed
+                        // window.location.href = '/success-page';
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors here, maybe show an error message
+                        console.error('Error adding contact:', error);
+                    }
+                });
+    
+                return false; // Prevent the form from submitting
+            });
+        });
+    
+        function displayImage(input) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var uploadIcon = document.querySelector('.upload-icon');
+                uploadIcon.style.backgroundImage = `url('${e.target.result}')`;
+                uploadIcon.style.backgroundSize = 'cover';
+                uploadIcon.style.color = 'transparent';
+            };
+            reader.readAsDataURL(input.files[0]);
+    
+            // Display file name
+            var fileName = input.files[0].name;
+            var fileNameSpan = document.getElementById('file-name');
+            fileNameSpan.innerText = fileName;
+        }
+    </script>
 
-        // Display file name
-        var fileName = input.files[0].name;
-        var fileNameSpan = document.getElementById('file-name');
-        fileNameSpan.innerText = fileName;
-    }
-</script>
 
 </body>
 </html>
