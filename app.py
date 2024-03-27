@@ -149,15 +149,15 @@ def addContact():
 
    
 
-@app.route('/edit', methods=['POST', 'GET'])
+@app.route('/edit-user', methods=['POST', 'GET'])
 def edit():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(contact_id=userid).first()
         return render_template('edit.html', userdata=userdata)
     elif request.method == "POST":
         userid = request.args.get('ID')
-        userdatatochange = Contacts.query.filter_by(id=userid).first()
+        userdatatochange = Contacts.query.filter_by(contact_id=userid).first()
        
         updatedhomeaddressofuser = request.form['homeaddress']
         updatedfirstnameofuser = request.form['firstname']
@@ -168,13 +168,14 @@ def edit():
         userdatatochange.email_address = updatedemailaddressofuser
         db.session.commit()
 
-        return "<h1>" + userdatatochange.email_address + "</h1>"
+        usersdata = Contacts.query.all()
+        return render_template('users.html', usersdata=usersdata)
 
 @app.route('/deletecheck', methods=['POST', 'GET'])
 def deletecheck():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(contact_id=userid).first()
         return render_template('delete_check.html', userdata=userdata)
     return "<h4>User delete page</h4>"
 
@@ -182,7 +183,7 @@ def deletecheck():
 def deleteproceed():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(id=userid).first()
+        userdata = Contacts.query.filter_by(contact_id=userid).first()
 
         db.session.delete(userdata)
         db.session.commit()

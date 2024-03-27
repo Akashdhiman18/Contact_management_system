@@ -36,6 +36,7 @@
   </tr>
 </thead>
 <tbody>
+  {% for user_item in usersdata %}
   <tr>
     <td>
       <div class="d-flex align-items-center">
@@ -46,17 +47,16 @@
           class="rounded-circle"
         />
         <div class="ms-3">
-          <p class="fw-bold mb-1">John Doe</p>
-          <p class="text-muted mb-0">john.doe@gmail.com</p>
+          <p class="fw-bold mb-1">{{user_item.first_name}} {{user_item.last_name}}</p>
         </div>
       </div>
     </td>
     <td>
-      <p class="fw-normal mb-1">Software engineer</p>
-      <p class="text-muted mb-0">IT department</p>
+      <p class="fw-normal mb-1">{{user_item.mobile}}</p>
+      
     </td>
     <td>
-      <p class="text-muted mb-0">IT department</p>
+      <p class="text-muted mb-0">{{user_item.home_address}}</p>
     </td>
     
     <td>
@@ -67,6 +67,7 @@
        <button type="button" class="btn btn-danger">Delete</button>
         </td>
   </tr>
+  {% endfor %}
 </tbody>
 </table>
 </div>
