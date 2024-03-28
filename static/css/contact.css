@@ -270,3 +270,16 @@ input[type="submit"]:hover {
     margin-right: 5px;
 }
 
+.success-msg{
+    color:green;
+    font-size: 16px;
+    font-weight: bold;
+    margin:auto;
+}
+
+.failure-msg{
+    color:red;
+    font-size: 16px;
+    font-weight: bold;
+    margin: auto;
+}

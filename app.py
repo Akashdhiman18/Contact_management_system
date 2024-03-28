@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = 'thisissecret'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the database
@@ -131,33 +131,36 @@ def addContact():
         
        
         # pictureData = request.form['picture']
+        try:
 
-        new_contact = Contacts(
-            first_name=firstnameData,
-            last_name=lastnameData,
-            email_address=emailaddressData,
-            mobile=mobileData,
-            home_address=homeaddressData,
-            # url_of_picture=pictureData
-        )
-        db.session.add(new_contact)
-        db.session.commit()
-        return render_template('users.html')
-
-    # Return the 'register.html' template for GET requests
-    return render_template('addcontact.html') 
-
+            new_contact = Contacts(
+                first_name=firstnameData,
+                last_name=lastnameData,
+                email_address=emailaddressData,
+                mobile=mobileData,
+                home_address=homeaddressData,
+                # url_of_picture=pictureData
+            )
+            db.session.add(new_contact)
+            db.session.commit()
+        
+            output_msg = "Contact successfully added"
+            return jsonify({'output_msg': output_msg, 'success': True})
+        except:
+            output_msg = "Whoops something went wrong while adding the contact. Try again later."
+            return jsonify({'output_msg': output_msg, 'success': False})
+    return render_template('addcontact.html')
    
 
-@app.route('/edit-user', methods=['POST', 'GET'])
+@app.route('/edit', methods=['POST', 'GET'])
 def edit():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(contact_id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
         return render_template('edit.html', userdata=userdata)
     elif request.method == "POST":
         userid = request.args.get('ID')
-        userdatatochange = Contacts.query.filter_by(contact_id=userid).first()
+        userdatatochange = Contacts.query.filter_by(id=userid).first()
        
         updatedhomeaddressofuser = request.form['homeaddress']
         updatedfirstnameofuser = request.form['firstname']
@@ -175,7 +178,7 @@ def edit():
 def deletecheck():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(contact_id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
         return render_template('delete_check.html', userdata=userdata)
     return "<h4>User delete page</h4>"
 
@@ -183,7 +186,7 @@ def deletecheck():
 def deleteproceed():
     if request.method == "GET":
         userid = request.args.get('ID')
-        userdata = Contacts.query.filter_by(contact_id=userid).first()
+        userdata = Contacts.query.filter_by(id=userid).first()
 
         db.session.delete(userdata)
         db.session.commit()

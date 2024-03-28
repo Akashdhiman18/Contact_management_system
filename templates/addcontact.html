@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}" />
 </head>
+<body style="background-image: url(static/img/background.jpg);"></body>
 <body >
     <nav>
         <input type="checkbox" id="nav-toggle">
@@ -27,7 +28,7 @@
             <div class="row">
                 <div class="column">
                     <h1>Create a New Contact</h1>
-                    <form id="contactForm" action="" method="POST" enctype="multipart/form-data">
+                    <form id="contactForm" action="/addContact" method="POST" enctype="multipart/form-data">
                         <div class="form-fields">
                             <div class="txt-field">
                                 <input type="text" name="firstname" required placeholder="firstname">
@@ -54,6 +55,8 @@
     <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
 </form>
                     </form>
+                    <div class ="success-msg" id="success-output-msg"></div>
+                    <div class="failure-msg" id="failure-output-msg"></div>
                 </div>
                 <div class="column">
                     <div class="image-upload">
@@ -88,14 +91,22 @@
                     success: function(response) {
                         // Handle the successful response, maybe show a success message
                         console.log('Contact added successfully');
-                        // You can redirect to another page if needed
-                        // window.location.href = '/success-page';
                     },
                     error: function(xhr, status, error) {
                         // Handle errors here, maybe show an error message
-                        console.error('Error adding contact:', error);
+                        console.error('Something went wrong while adding. Please try again later', error);
+                    }
+                })
+                .done(function(data){
+                    if (data.success){
+                        $('#success-output-msg').text(data.output_msg).show();
+                        window.location.href = '/users';
+                    }
+                    else{
+                        $('#failure-output-msg').text(data.output_msg).show();
                     }
                 });
+                e.preventDefault();
     
                 return false; // Prevent the form from submitting
             });
