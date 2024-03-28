@@ -28,28 +28,32 @@
             <div class="row">
                 <div class="column">
                     <h1>Create a New Contact</h1>
-                    <form id="contactForm" action="/addContact" method="POST" enctype="multipart/form-data">
+                    <form id="contactForm" method="POST" enctype="multipart/form-data">
                         <div class="form-fields">
                             <div class="txt-field">
-                                <input type="text" name="firstname" required placeholder="firstname">
+                                <input type="text" name="firstname" required placeholder="Enter First Name">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="text" name="lastname" required placeholder="Lastname">
+                                <input type="text" name="lastname" required placeholder="Enter Last Name">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="email" name="emailaddress" required placeholder="Email Address">
+                                <input type="email" name="emailaddress" required placeholder="Enter Email Address">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <input type="tel" name="mobilephone" required placeholder="Phone Number">
+                                <input type="tel" name="mobilephone" required placeholder="Enter Phone Number">
                                 <span></span>
                             </div>
                             <div class="txt-field">
-                                <textarea name="homeaddress" required placeholder="Address"></textarea>
+                                <textarea name="homeaddress" required placeholder="Enter Home Address"></textarea>
                                 <span></span>
                             </div>
+                            <div class="txt-field">
+                                <input type = "file" name = "file" />
+                                <span></span>
+                            </div>                            
                         </div>
                         <input name="submit" type="submit" value="Create Contact">
     <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Go to last page</a>
@@ -58,6 +62,7 @@
                     <div class ="success-msg" id="success-output-msg"></div>
                     <div class="failure-msg" id="failure-output-msg"></div>
                 </div>
+                <!--
                 <div class="column">
                     <div class="image-upload">
                         <label for="image-upload" class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></label>
@@ -65,6 +70,7 @@
                         <img id="preview-image" src="#" alt="Preview Image" style="display: none; max-width: 100%; max-height: 200px;">
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>

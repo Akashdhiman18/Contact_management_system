@@ -6,15 +6,52 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db, Contacts, SystemUser
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
+from datetime import datetime as dt
+
+
+PROFILE_PIC_UPLOAD_FOLDER = 'static/img/contacts/'
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Init App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisissecret'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['PROFILE_PIC_UPLOAD_FOLDER'] = PROFILE_PIC_UPLOAD_FOLDER
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+
+# Function for file type validation
+# Returns true if file to upload is of the type mentioned in ALLOWED_EXTENSIONS setting
+def allowed_file(filename):
+    # if file is user.jpg, it splits it at the '.' into two words -> user, jpg. It returns the second word i.e. jpg, 
+    # converts it to lower case and checks if its in the ALLOWED_EXTENSIONS
+    print("Here??")
+    file_name_split = filename.rsplit('.', 1)
+    print("Here too??")
+    file_extension = file_name_split[1]
+    print(file_extension)
+    if file_extension in ALLOWED_EXTENSIONS:
+        return True
+    else:
+        return False
+    '''
+
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           '''
+
+# function to get the file extension
+def get_file_extension(filename):
+    print("Here??")
+    file_name_split = filename.rsplit('.', 1)
+    print("Here too??")
+    file_extension = file_name_split[1]
+    print(file_extension)
+    return file_extension
 
 # Initialize the database
 db.init_app(app)
@@ -128,7 +165,26 @@ def addContact():
         emailaddressData = request.form['emailaddress']
         mobileData = request.form['mobilephone']
         homeaddressData = request.form['homeaddress']
-        
+
+        profile_pic_file_path = ""
+
+        if 'file' in request.files:
+            file = request.files['file']
+            print(allowed_file(file.filename))
+
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                print(filename)
+                # Save the uploaded file as name of current time, first and last name
+                dt_now = dt.now().strftime("%Y%m%d%H%M%S%f")
+                file_extension = get_file_extension(file.filename)
+
+                filename_to_save = firstnameData + "_" + lastnameData + "_" + dt_now + "." + file_extension
+                print(filename_to_save)
+                # Save this file to the folder path
+                file.save(os.path.join(app.config['PROFILE_PIC_UPLOAD_FOLDER'], filename_to_save))
+                profile_pic_file_path = PROFILE_PIC_UPLOAD_FOLDER + filename_to_save
+
        
         # pictureData = request.form['picture']
         try:
@@ -139,7 +195,7 @@ def addContact():
                 email_address=emailaddressData,
                 mobile=mobileData,
                 home_address=homeaddressData,
-                # url_of_picture=pictureData
+                url_of_picture=profile_pic_file_path
             )
             db.session.add(new_contact)
             db.session.commit()
