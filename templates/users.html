@@ -36,7 +36,7 @@
   </tr>
 </thead>
 <tbody>
-  {% for user_item in usersdata %}
+  {% for user_item in contacts %}
   <tr>
     <td>
       <div class="d-flex align-items-center">
@@ -60,12 +60,12 @@
     </td>
     
     <td>
-      <button type="button" class="btn btn-info">Edit</button>
-
+      <a class="btn btn-info" href="/edit-user?ID={{user_item.contact_id}}">Edit</a>
      </td>
      <td>
-       <button type="button" class="btn btn-danger">Delete</button>
-        </td>
+       
+       <a class="btn btn-danger" href="{{url_for('deletecheck')}}?ID={{user_item.contact_id}}">Delete</a>
+    </td>
   </tr>
   {% endfor %}
 </tbody>

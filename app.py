@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = 'thisissecret'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:dhiman223@localhost:5432/contactsdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://domadmin:2021Shades@localhost:5432/contactsdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the database
@@ -168,8 +168,8 @@ def edit():
         userdatatochange.email_address = updatedemailaddressofuser
         db.session.commit()
 
-        usersdata = Contacts.query.all()
-        return render_template('users.html', usersdata=usersdata)
+        contacts = Contacts.query.all()
+        return render_template('users.html', contacts=contacts)
 
 @app.route('/deletecheck', methods=['POST', 'GET'])
 def deletecheck():
@@ -188,8 +188,8 @@ def deleteproceed():
         db.session.delete(userdata)
         db.session.commit()
 
-        usersdata = Contacts.query.order_by(Contacts.id).all()
-        return render_template('users.html', usersdata=usersdata)
+        contacts = Contacts.query.all()
+        return render_template('users.html', contacts=contacts)
         
     return "<h4>User delete page</h4>"
 
