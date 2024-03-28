@@ -40,12 +40,20 @@
   <tr>
     <td>
       <div class="d-flex align-items-center">
+        {% if user_item.url_of_picture %}
+          <img src="{{user_item.url_of_picture}}" 
+          alt=""
+          style="width: 45px; height: 45px"
+          class="rounded-circle"
+          />
+        {% else %}
         <img
           src="https://mdbootstrap.com/img/new/avatars/8.jpg"
           alt=""
           style="width: 45px; height: 45px"
           class="rounded-circle"
         />
+        {% endif %}
         <div class="ms-3">
           <p class="fw-bold mb-1">{{user_item.first_name}} {{user_item.last_name}}</p>
         </div>

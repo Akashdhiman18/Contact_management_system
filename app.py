@@ -66,6 +66,8 @@ def index():
 @app.route('/users', methods=['GET'])
 def users():
     contacts = Contacts.query.all()
+    #for loop to loop through the contacts
+    # for the image path, grab it and update it to the 
     return render_template('users.html', contacts=contacts)
 
 @app.route('/register', methods=['GET', 'POST'])
